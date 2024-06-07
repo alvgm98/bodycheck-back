@@ -2,6 +2,7 @@ package bodycheck_back.bodycheck.auth.services;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -47,6 +48,11 @@ public class AuthService {
       return AuthResponse.builder()
             .token(jwtService.getToken(user))
             .build();
+   }
+
+   // Obtiene el Usuario que ha realizado la petición
+   public User getUserFromToken() {
+      return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
    }
 
 }
