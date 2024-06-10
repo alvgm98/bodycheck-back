@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import bodycheck_back.bodycheck.auth.services.AuthService;
 import bodycheck_back.bodycheck.models.dtos.CustomerDTO;
 import bodycheck_back.bodycheck.models.entities.Customer;
 import bodycheck_back.bodycheck.models.entities.User;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 public class CustomerService {
 
    private final CustomerRepository customerRepository;
+   private final AuthService authService;
 
    public List<CustomerDTO> findAllByUser(User user) {
       List<Customer> customers = customerRepository.findAllByUser(user);
@@ -28,8 +30,19 @@ public class CustomerService {
       return customerRepository.findById(id);
    }
 
-   public CustomerDTO save(Customer customer) {
+   public CustomerDTO create(Customer customer) {
+      customer.setUser(authService.getUserFromToken());
       return convertToDto(customerRepository.save(customer));
+   }
+
+   public CustomerDTO update(Long id, Customer customer) {
+      customer.setId(id);
+      customer.setUser(authService.getUserFromToken());
+      return convertToDto(customerRepository.save(customer));
+   }
+
+   public void delete(Long id) {
+      customerRepository.deleteById(id);
    }
 
    /**
@@ -50,7 +63,4 @@ public class CustomerService {
             .build();
    }
 
-   public void delete(Long id) {
-      customerRepository.deleteById(id);
-   }
 }

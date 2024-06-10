@@ -4,16 +4,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import bodycheck_back.bodycheck.auth.services.AuthService;
+import bodycheck_back.bodycheck.controllers.util.CustomerValidator;
 import bodycheck_back.bodycheck.models.dtos.CustomerDTO;
 import bodycheck_back.bodycheck.models.entities.Customer;
-import bodycheck_back.bodycheck.models.entities.User;
 import bodycheck_back.bodycheck.services.CustomerService;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-import java.util.Optional;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,83 +27,54 @@ public class CustomerController {
 
    private final CustomerService customerService;
    private final AuthService authService;
+   private final CustomerValidator customerValidator;
 
    @GetMapping()
    public ResponseEntity<List<CustomerDTO>> getCustomers() {
-      return ResponseEntity.status(HttpStatus.OK).body(customerService.findAllByUser(getCurrentUser()));
+      return ResponseEntity.ok(customerService.findAllByUser(authService.getUserFromToken()));
    }
 
    @GetMapping("/{id}")
    public ResponseEntity<CustomerDTO> getCustomer(@PathVariable Long id) {
-      Optional<Customer> o = customerService.findById(id);
-      // El Customer no existe.
-      if (!o.isPresent()) {
-         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+      // Comprueba que el Customer existe y pertenece al User de la petición.
+      ResponseEntity<?> validationReponse = customerValidator.validateCustomerOwnership(id);
+      if (!validationReponse.getStatusCode().is2xxSuccessful()) {
+         return ResponseEntity.status(validationReponse.getStatusCode()).build();
       }
-
-      Customer c = o.get();
-      User user = getCurrentUser();
-
-      // El Customer no le pertenece.
-      if (!c.getUser().getId().equals(user.getId())) {
-         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-      }
-
-      // Funcionó correctamente.
-      return ResponseEntity.status(HttpStatus.OK).body(customerService.convertToDto(c));
+      
+      // Devuelve el Customer con DTO.
+      return ResponseEntity.ok((CustomerDTO) validationReponse.getBody());
    }
 
    @PostMapping()
    public ResponseEntity<CustomerDTO> saveCustomer(@RequestBody Customer customer) {
-      customer.setUser(getCurrentUser());
-      return ResponseEntity.status(HttpStatus.OK).body(customerService.save(customer));
+      // Se crea el Customer y se devuelve como DTO.
+      return ResponseEntity.ok(customerService.create(customer));
    }
 
    @PutMapping("/{id}")
    public ResponseEntity<CustomerDTO> updateCustomer(@PathVariable Long id, @RequestBody Customer customer) {
-      Optional<Customer> o = customerService.findById(id);
-      // El Customer no existe.
-      if (!o.isPresent()) {
-         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+      // Comprueba que el Customer existe y pertenece al User de la petición.
+      ResponseEntity<?> validationReponse = customerValidator.validateCustomerOwnership(id);
+      if (!validationReponse.getStatusCode().is2xxSuccessful()) {
+         return ResponseEntity.status(validationReponse.getStatusCode()).build();
       }
-
-      Customer c = o.get();
-      User user = getCurrentUser();
-
-      // El Customer no le pertenece.
-      if (!c.getUser().getId().equals(user.getId())) {
-         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-      }
-
-      // Funcionó correctamente.
-      customer.setId(id);
-      customer.setUser(user);
-      return ResponseEntity.status(HttpStatus.OK).body(customerService.save(customer));
+      
+      // Se actualiza el Customer y se devuelve como DTO.
+      return ResponseEntity.ok(customerService.update(id, customer));
    }
 
    @DeleteMapping("/{id}")
    public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
-      Optional<Customer> o = customerService.findById(id);
-      // El Customer no existe.
-      if (!o.isPresent()) {
-         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+      // Comprueba que el Customer existe y pertenece al User de la petición.
+      ResponseEntity<?> validationReponse = customerValidator.validateCustomerOwnership(id);
+      if (!validationReponse.getStatusCode().is2xxSuccessful()) {
+         return ResponseEntity.status(validationReponse.getStatusCode()).build();
       }
-
-      Customer c = o.get();
-      User user = getCurrentUser();
-
-      // El Customer no le pertenece.
-      if (!c.getUser().getId().equals(user.getId())) {
-         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-      }
-
-      // Funcionó correctamente.
+      
+      // Se elimina el Customer.
       customerService.delete(id);
-      return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-   }
-
-   private User getCurrentUser() {
-      return authService.getUserFromToken();
+      return ResponseEntity.noContent().build();
    }
 
 }
