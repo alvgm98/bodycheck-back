@@ -1,0 +1,45 @@
+package bodycheck_back.bodycheck.services;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
+import bodycheck_back.bodycheck.models.dtos.MeasurementDTO;
+import bodycheck_back.bodycheck.models.entities.measurement.Measurement;
+import bodycheck_back.bodycheck.repositories.MeasurementRepository;
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class MeasurementService {
+
+   private final MeasurementRepository measurementRepository;
+
+   public List<MeasurementDTO> getList(Long customerId) {
+      List<Measurement> measurements = measurementRepository.findAllByCustomerId(customerId);
+
+      return measurements.stream().map(this::convertToDto).collect(Collectors.toList());
+   }
+
+   public MeasurementDTO create(Measurement measurement) {
+      return convertToDto(measurementRepository.save(measurement));
+   }
+
+   public MeasurementDTO update(Long measurementId, Measurement measurement) {
+      measurement.setId(measurementId);
+      return convertToDto(measurementRepository.save(measurement));
+   }
+
+   public MeasurementDTO convertToDto(Measurement measurement) {
+      return MeasurementDTO.builder()
+            .id(measurement.getId())
+            .session(measurement.getSession())
+            .date(measurement.getDate())
+            .weight(measurement.getWeight())
+            .circumference(measurement.getCircumference())
+            .skinfold(measurement.getSkinfold())
+            .build();
+   }
+
+}
