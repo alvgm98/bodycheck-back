@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import bodycheck_back.bodycheck.auth.services.AuthService;
 import bodycheck_back.bodycheck.models.dtos.CustomerDTO;
@@ -30,17 +31,20 @@ public class CustomerService {
       return customerRepository.findById(id);
    }
 
+   @Transactional
    public CustomerDTO create(Customer customer) {
       customer.setUser(authService.getUserFromToken());
       return convertToDto(customerRepository.save(customer));
    }
 
+   @Transactional
    public CustomerDTO update(Long id, Customer customer) {
       customer.setId(id);
       customer.setUser(authService.getUserFromToken());
       return convertToDto(customerRepository.save(customer));
    }
 
+   @Transactional
    public void delete(Long id) {
       customerRepository.deleteById(id);
    }

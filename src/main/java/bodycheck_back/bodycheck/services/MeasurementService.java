@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import bodycheck_back.bodycheck.models.dtos.MeasurementDTO;
 import bodycheck_back.bodycheck.models.entities.measurement.Measurement;
@@ -22,10 +23,12 @@ public class MeasurementService {
       return measurements.stream().map(this::convertToDto).collect(Collectors.toList());
    }
 
+   @Transactional
    public MeasurementDTO create(Measurement measurement) {
       return convertToDto(measurementRepository.save(measurement));
    }
 
+   @Transactional
    public MeasurementDTO update(Long measurementId, Measurement measurement) {
       measurement.setId(measurementId);
       return convertToDto(measurementRepository.save(measurement));

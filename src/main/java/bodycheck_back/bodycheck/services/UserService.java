@@ -1,6 +1,7 @@
 package bodycheck_back.bodycheck.services;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import bodycheck_back.bodycheck.models.dtos.UserDTO;
 import bodycheck_back.bodycheck.models.entities.User;
@@ -13,6 +14,7 @@ public class UserService {
 
    private final UserRepository userRepository;
 
+   @Transactional
    public UserDTO updateUser(User user, UserDTO userDTO) {
       return convertToDto(userRepository.save(
             User.builder()
