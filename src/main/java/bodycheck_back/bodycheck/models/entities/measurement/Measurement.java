@@ -15,6 +15,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,14 +33,21 @@ public class Measurement {
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    private Long id;
 
+   @NotNull
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "customer_id", nullable = false)
    private Customer customer;
 
+   @NotBlank
+   @Column(nullable = false)
    private Integer session;
-   private LocalDate date;
    
-   @Column(precision = 3, scale = 1)
+   @NotNull
+   @Column(nullable = false)
+   private LocalDate date;
+
+   @NotNull
+   @Column(nullable = false, precision = 3, scale = 1)
    private BigDecimal weight;
 
    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
