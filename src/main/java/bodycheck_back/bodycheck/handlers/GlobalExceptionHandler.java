@@ -6,6 +6,8 @@ import java.util.Map;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -52,6 +54,22 @@ public class GlobalExceptionHandler {
    public ResponseEntity<String> handlerArgumentException(IllegalArgumentException e) {
       log.error("Illegal argument exception: {}", e.getMessage());
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+   }
+
+   // Manejador para excepciones de autenticación - BadCredentialsException
+   @ResponseStatus(HttpStatus.UNAUTHORIZED)
+   @ExceptionHandler(BadCredentialsException.class)
+   public ResponseEntity<String> handleBadCredentialsException(BadCredentialsException e) {
+      log.error("Bad credentials: {}", e.getMessage());
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+   }
+
+   // Manejador para excepciones de autenticación - UsernameNotFoundException
+   @ResponseStatus(HttpStatus.UNAUTHORIZED)
+   @ExceptionHandler(UsernameNotFoundException.class)
+   public ResponseEntity<String> handleUsernameNotFoundException(UsernameNotFoundException e) {
+      log.error("User not found: {}", e.getMessage());
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
    }
 
    /**
