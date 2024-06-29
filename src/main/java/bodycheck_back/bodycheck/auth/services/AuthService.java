@@ -13,6 +13,7 @@ import bodycheck_back.bodycheck.auth.models.RegisterRequest;
 import bodycheck_back.bodycheck.models.entities.User;
 import bodycheck_back.bodycheck.models.enums.Role;
 import bodycheck_back.bodycheck.repositories.UserRepository;
+import bodycheck_back.bodycheck.services.UserService;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -23,6 +24,7 @@ public class AuthService {
    private final JwtService jwtService;
    private final PasswordEncoder passwordEncoder;
    private final AuthenticationManager authenticationManager;
+   private final UserService userService;
 
    public AuthResponse login(LoginRequest request) {
       authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
@@ -30,6 +32,7 @@ public class AuthService {
       String token = jwtService.getToken(user);
       return AuthResponse.builder()
             .token(token)
+            .user(userService.convertToDto((User) user))
             .build();
    }
 
@@ -47,6 +50,7 @@ public class AuthService {
 
       return AuthResponse.builder()
             .token(jwtService.getToken(user))
+            .user(userService.convertToDto(user))
             .build();
    }
 
