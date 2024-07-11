@@ -3,7 +3,6 @@ package bodycheck_back.bodycheck.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import bodycheck_back.bodycheck.auth.services.AuthService;
 import bodycheck_back.bodycheck.controllers.util.CustomerValidator;
 import bodycheck_back.bodycheck.models.dtos.CustomerDTO;
 import bodycheck_back.bodycheck.models.entities.Customer;
@@ -28,12 +27,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class CustomerController {
 
    private final CustomerService customerService;
-   private final AuthService authService;
    private final CustomerValidator customerValidator;
 
    @GetMapping()
    public ResponseEntity<List<CustomerDTO>> getCustomers() {
-      return ResponseEntity.ok(customerService.findAllByUser(authService.getUserFromToken()));
+      return ResponseEntity.ok(customerService.findAllByUser());
    }
 
    @GetMapping("/{id}")

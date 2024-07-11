@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import bodycheck_back.bodycheck.auth.services.AuthService;
 import bodycheck_back.bodycheck.models.dtos.CustomerDTO;
 import bodycheck_back.bodycheck.models.entities.Customer;
-import bodycheck_back.bodycheck.models.entities.User;
 import bodycheck_back.bodycheck.repositories.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -21,8 +20,8 @@ public class CustomerService {
    private final CustomerRepository customerRepository;
    private final AuthService authService;
 
-   public List<CustomerDTO> findAllByUser(User user) {
-      List<Customer> customers = customerRepository.findAllByUser(user);
+   public List<CustomerDTO> findAllByUser() {
+      List<Customer> customers = customerRepository.findAllByUser(authService.getUserFromToken());
 
       return customers.stream().map(this::convertToDto).collect(Collectors.toList());
    }
