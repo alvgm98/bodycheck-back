@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import bodycheck_back.bodycheck.exceptions.AppointmentConflictException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 
@@ -88,6 +89,19 @@ public class GlobalExceptionHandler {
    @ExceptionHandler(DataIntegrityViolationException.class)
    public ResponseEntity<String> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
       log.error("Data integrity violation: {}", e.getMessage());
+      return ResponseEntity.status(HttpStatus.CONFLICT).build();
+   }
+
+   /**
+    * Maneja las excepciones personalizadas AppointmentConflictException lanzadas cuando
+    * se intenta dar de alta una cita que solapa con alguna otra cita.
+    *
+    * @param e la excepción de AppointmentConflictException capturada
+    * @return una ResponseEntity vacía con el estado HTTP CONFLICT
+    */
+   @ExceptionHandler(AppointmentConflictException.class)
+   public ResponseEntity<String> handleAppointmentConflictException(AppointmentConflictException e) {
+      log.error("Appointment conflict: {}", e.getMessage());
       return ResponseEntity.status(HttpStatus.CONFLICT).build();
    }
 

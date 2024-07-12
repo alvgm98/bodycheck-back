@@ -47,6 +47,5 @@ public class AppointmentController {
    @PostMapping()
    public ResponseEntity<?> createAppointment(@RequestBody Appointment appointment) {
       return ResponseEntity.ok(appointmentService.create(appointment));
-   }
-
+   }  
 }

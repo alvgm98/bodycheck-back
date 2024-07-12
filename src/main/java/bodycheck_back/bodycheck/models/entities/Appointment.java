@@ -1,7 +1,7 @@
 package bodycheck_back.bodycheck.models.entities;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -47,11 +47,11 @@ public class Appointment {
 
    @NotNull
    @Column(nullable = false)
-   private LocalTime time;
+   private LocalDateTime startTime;
 
    @NotNull
    @Column(nullable = false)
-   private Integer duration;
+   private LocalDateTime endTime;
 
    @NotBlank
    @Size(max = 20)

@@ -1,7 +1,6 @@
 package bodycheck_back.bodycheck.services;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import bodycheck_back.bodycheck.auth.services.AuthService;
+import bodycheck_back.bodycheck.exceptions.AppointmentConflictException;
 import bodycheck_back.bodycheck.models.dtos.AppointmentDTO;
 import bodycheck_back.bodycheck.models.entities.Appointment;
 import bodycheck_back.bodycheck.models.entities.Customer;
@@ -39,7 +39,15 @@ public class AppointmentService {
    @Transactional
    public AppointmentDTO create(Appointment appointment) {
       appointment.setUser(authService.getUserFromToken());
+      // IMPORTANTE! sumo 1s al startTime para que no encuentre conflicto cuando una cita empieza justo cuando otra acaba.
+      appointment.setStartTime(appointment.getStartTime().plusSeconds(1));
 
+      // Comprobamos que no exista ninguna cita solapada.
+      List<Appointment> conflictingAppointments = findConflictingAppointments(appointment);
+
+      if (!conflictingAppointments.isEmpty()) {
+         throw new AppointmentConflictException();
+      }
       return convertToDto(appointmentRepository.save(appointment));
    }
 
@@ -50,10 +58,18 @@ public class AppointmentService {
       return AppointmentDTO.builder()
             .id(appointment.getId())
             .customer(customerService.convertToDto(customer))
-            .dateTime(LocalDateTime.of(appointment.getDate(), appointment.getTime()))
-            .duration(appointment.getDuration())
+            .startTime(appointment.getStartTime())
+            .endTime(appointment.getEndTime())
             .reason(appointment.getReason())
             .observations(appointment.getObservations())
             .build();
+   }
+
+   private List<Appointment> findConflictingAppointments(Appointment appointment) {
+      return appointmentRepository.findConflictingAppointments(
+            appointment.getUser().getId(),
+            appointment.getDate(),
+            appointment.getStartTime(),
+            appointment.getEndTime());
    }
 }
