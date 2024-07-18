@@ -35,6 +35,7 @@ public class UserService {
             .lastName(user.getLastName())
             .username(user.getUsername())
             .phone(user.getPhone())
+            .situation(user.getSituation())
             .build();
    }
 }

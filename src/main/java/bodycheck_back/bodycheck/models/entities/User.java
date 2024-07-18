@@ -8,6 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import bodycheck_back.bodycheck.models.enums.Role;
+import bodycheck_back.bodycheck.models.enums.Situation;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -56,6 +57,9 @@ public class User implements UserDetails {
    private String lastName;
 
    private String phone;
+
+   @Enumerated(EnumType.STRING)
+   private Situation situation;
 
    @Enumerated(EnumType.STRING)
    private Role role;

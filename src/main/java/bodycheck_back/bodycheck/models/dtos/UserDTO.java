@@ -1,5 +1,6 @@
 package bodycheck_back.bodycheck.models.dtos;
 
+import bodycheck_back.bodycheck.models.enums.Situation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,4 +16,5 @@ public class UserDTO {
    private String firstName;
    private String lastName;
    private String phone;
+   private Situation situation;
 }

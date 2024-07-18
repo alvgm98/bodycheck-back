@@ -43,6 +43,7 @@ public class AuthService {
             .firstName(request.getFirstName())
             .lastName(request.getLastName())
             .phone(request.getPhone())
+            .situation(request.getSituation())
             .role(Role.USER)
             .build();
 
