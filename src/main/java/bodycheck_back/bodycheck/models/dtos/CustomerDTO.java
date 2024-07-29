@@ -18,7 +18,8 @@ public class CustomerDTO {
    private String email;
    private String phone;
    private LocalDate birthdate;
-   private String gender;
    private Short height;
+   private String gender;
+   private String ethnicity;
    private String observations;
 }

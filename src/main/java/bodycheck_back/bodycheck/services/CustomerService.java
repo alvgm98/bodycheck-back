@@ -60,8 +60,9 @@ public class CustomerService {
             .email(customer.getEmail())
             .phone(customer.getPhone())
             .birthdate(customer.getBirthdate())
-            .gender(customer.getGender().toString())
             .height(customer.getHeight())
+            .gender(customer.getGender().toString())
+            .ethnicity(customer.getEthnicity().toString())
             .observations(customer.getObservations())
             .build();
    }

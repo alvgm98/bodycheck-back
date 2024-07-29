@@ -2,6 +2,7 @@ package bodycheck_back.bodycheck.models.entities;
 
 import java.time.LocalDate;
 
+import bodycheck_back.bodycheck.models.enums.Ethnicity;
 import bodycheck_back.bodycheck.models.enums.Gender;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -66,14 +67,19 @@ public class Customer {
    private LocalDate birthdate;
 
    @NotNull
+   @Max(250)
+   @Column(nullable = false)
+   private Short height;
+
+   @NotNull
    @Enumerated(EnumType.STRING)
    @Column(nullable = false)
    private Gender gender;
 
    @NotNull
-   @Max(250)
+   @Enumerated(EnumType.STRING)
    @Column(nullable = false)
-   private Short height;
+   private Ethnicity ethnicity;
 
    @Size(max = 1000)
    @Column(length = 1000)
