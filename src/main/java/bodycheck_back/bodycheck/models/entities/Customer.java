@@ -51,10 +51,9 @@ public class Customer {
    @Column(nullable = false, length = 80)
    private String lastName;
 
-   @NotBlank
    @Email
    @Size(max = 100)
-   @Column(nullable = false, length = 100)
+   @Column(length = 100)
    private String email;
 
    @Size(max = 15)
