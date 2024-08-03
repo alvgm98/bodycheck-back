@@ -9,13 +9,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import bodycheck_back.bodycheck.models.entities.Appointment;
-import bodycheck_back.bodycheck.models.entities.Customer;
 import bodycheck_back.bodycheck.models.entities.User;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
    List<Appointment> findAllByUserAndDate(User user, LocalDate date);
 
-   List<Appointment> findAllByUserAndCustomer(User user, Customer customer);
+   List<Appointment> findAllByUserAndCustomerId(User user, Long customerId);
 
    @Query("SELECT a FROM Appointment a WHERE a.user.id = :userId AND a.date = :date AND " +
          "((:startTime BETWEEN a.startTime AND a.endTime) OR " +

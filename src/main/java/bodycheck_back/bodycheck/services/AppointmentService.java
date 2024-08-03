@@ -29,9 +29,9 @@ public class AppointmentService {
       return appointments.stream().map(this::convertToDto).collect(Collectors.toList());
    }
 
-   public List<AppointmentDTO> findAllByCustomer(Customer customer) {
-      List<Appointment> appointments = appointmentRepository.findAllByUserAndCustomer(authService.getUserFromToken(),
-            customer);
+   public List<AppointmentDTO> findAllByCustomer(Long customerId) {
+      List<Appointment> appointments = appointmentRepository.findAllByUserAndCustomerId(authService.getUserFromToken(),
+            customerId);
 
       return appointments.stream().map(this::convertToDto).collect(Collectors.toList());
    }

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import bodycheck_back.bodycheck.controllers.util.CustomerValidator;
 import bodycheck_back.bodycheck.models.dtos.AppointmentDTO;
 import bodycheck_back.bodycheck.models.entities.Appointment;
-import bodycheck_back.bodycheck.models.entities.Customer;
 import bodycheck_back.bodycheck.services.AppointmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +40,7 @@ public class AppointmentController {
          return ResponseEntity.status(validationReponse.getStatusCode()).build();
       }
 
-      return ResponseEntity.ok(appointmentService.findAllByCustomer(Customer.builder().id(customerId).build()));
+      return ResponseEntity.ok(appointmentService.findAllByCustomer(customerId));
    }
 
    @PostMapping()
