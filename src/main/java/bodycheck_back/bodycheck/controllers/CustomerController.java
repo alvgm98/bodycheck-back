@@ -4,9 +4,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import bodycheck_back.bodycheck.controllers.util.CustomerValidator;
+import bodycheck_back.bodycheck.models.dtos.AppointmentDTO;
 import bodycheck_back.bodycheck.models.dtos.CustomerDTO;
+import bodycheck_back.bodycheck.models.dtos.CustomerDetailedDTO;
+import bodycheck_back.bodycheck.models.dtos.MeasurementDTO;
 import bodycheck_back.bodycheck.models.entities.Customer;
+import bodycheck_back.bodycheck.services.AppointmentService;
 import bodycheck_back.bodycheck.services.CustomerService;
+import bodycheck_back.bodycheck.services.MeasurementService;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -27,6 +32,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class CustomerController {
 
    private final CustomerService customerService;
+   private final MeasurementService measurementService;
+   private final AppointmentService appointmentService;
+
    private final CustomerValidator customerValidator;
 
    @GetMapping()
@@ -44,6 +52,25 @@ public class CustomerController {
 
       // Devuelve el Customer con DTO.
       return ResponseEntity.ok((CustomerDTO) validationReponse.getBody());
+   }
+
+   @SuppressWarnings("null")
+   @GetMapping("/detailed/{id}")
+   public ResponseEntity<CustomerDetailedDTO> getCustomerDetailed(@PathVariable Long id) {
+      // Comprueba que el Customer existe y pertenece al User de la petición.
+      ResponseEntity<?> validationReponse = customerValidator.validateCustomerOwnership(id);
+      if (!validationReponse.getStatusCode().is2xxSuccessful()) {
+         return ResponseEntity.status(validationReponse.getStatusCode()).build();
+      }
+
+      // Extraemos los datos ya validados del Customer.
+      CustomerDTO customerDTO = (CustomerDTO) validationReponse.getBody();
+      List<MeasurementDTO> measurements = measurementService.getList(customerDTO.getId());
+      List<AppointmentDTO> appointments = appointmentService.findAllByCustomer(customerDTO.getId());
+
+      CustomerDetailedDTO customerDetailedDTO = customerService.getCustomerDetailed(customerDTO, measurements, appointments);
+      // Devuelve el Customer con DTO.
+      return ResponseEntity.ok(customerDetailedDTO);
    }
 
    @PostMapping()

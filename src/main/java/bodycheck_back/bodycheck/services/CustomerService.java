@@ -8,7 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import bodycheck_back.bodycheck.auth.services.AuthService;
+import bodycheck_back.bodycheck.models.dtos.AppointmentDTO;
 import bodycheck_back.bodycheck.models.dtos.CustomerDTO;
+import bodycheck_back.bodycheck.models.dtos.CustomerDetailedDTO;
+import bodycheck_back.bodycheck.models.dtos.MeasurementDTO;
 import bodycheck_back.bodycheck.models.entities.Customer;
 import bodycheck_back.bodycheck.repositories.CustomerRepository;
 import lombok.RequiredArgsConstructor;
@@ -64,6 +67,23 @@ public class CustomerService {
             .gender(customer.getGender().toString())
             .ethnicity(customer.getEthnicity().toString())
             .observations(customer.getObservations())
+            .build();
+   }
+
+   public CustomerDetailedDTO getCustomerDetailed(CustomerDTO customerDTO, List<MeasurementDTO> measurements, List<AppointmentDTO> lastAppointment) {      
+      return CustomerDetailedDTO.builder()
+            .id(customerDTO.getId())
+            .firstName(customerDTO.getFirstName())
+            .lastName(customerDTO.getLastName())
+            .email(customerDTO.getEmail())
+            .phone(customerDTO.getPhone())
+            .birthdate(customerDTO.getBirthdate())
+            .height(customerDTO.getHeight())
+            .gender(customerDTO.getGender().toString())
+            .ethnicity(customerDTO.getEthnicity().toString())
+            .observations(customerDTO.getObservations())
+            .measurements(measurements)
+            .appointments(lastAppointment)
             .build();
    }
 
