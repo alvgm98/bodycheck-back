@@ -42,6 +42,7 @@ public class MeasurementService {
             .weight(measurement.getWeight())
             .circumference(measurement.getCircumference())
             .skinfold(measurement.getSkinfold())
+            .observations(measurement.getObservations())
             .build();
    }
 

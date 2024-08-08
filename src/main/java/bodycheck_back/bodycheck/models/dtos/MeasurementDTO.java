@@ -21,4 +21,5 @@ public class MeasurementDTO {
    private BigDecimal weight;
    private Circumference circumference;
    private Skinfold skinfold;
+   private String observations;
 }

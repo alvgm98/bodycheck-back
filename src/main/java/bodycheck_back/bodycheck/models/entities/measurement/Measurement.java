@@ -56,4 +56,7 @@ public class Measurement {
    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
    @JoinColumn(name = "skinfold_id")
    private Skinfold skinfold;
+
+   @Column(columnDefinition = "TEXT")
+   private String observations;
 }
