@@ -86,7 +86,6 @@ public class Customer {
    @Column(length = 50)
    private String target;
 
-   @Size(max = 1000)
-   @Column(length = 1000)
+   @Column(columnDefinition = "TEXT")
    private String observations;
 }

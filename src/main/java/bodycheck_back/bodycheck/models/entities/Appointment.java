@@ -58,7 +58,6 @@ public class Appointment {
    @Column(nullable = false, length = 20)
    private String reason;
 
-   @Size(max = 1000)
-   @Column(length = 1000)
+   @Column(columnDefinition = "TEXT")
    private String observations;
 }
