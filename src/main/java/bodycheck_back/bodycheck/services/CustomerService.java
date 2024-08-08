@@ -65,6 +65,7 @@ public class CustomerService {
             .birthdate(customer.getBirthdate())
             .height(customer.getHeight())
             .gender(customer.getGender().toString())
+            .target(customer.getTarget())
             .ethnicity(customer.getEthnicity().toString())
             .observations(customer.getObservations())
             .build();
@@ -80,6 +81,7 @@ public class CustomerService {
             .birthdate(customerDTO.getBirthdate())
             .height(customerDTO.getHeight())
             .gender(customerDTO.getGender().toString())
+            .target(customerDTO.getTarget())
             .ethnicity(customerDTO.getEthnicity().toString())
             .observations(customerDTO.getObservations())
             .measurements(measurements)

@@ -22,6 +22,7 @@ public class CustomerDetailedDTO {
    private Short height;
    private String gender;
    private String ethnicity;
+   private String target;
    private String observations;
    private List<MeasurementDTO> measurements;
    private List<AppointmentDTO> appointments;

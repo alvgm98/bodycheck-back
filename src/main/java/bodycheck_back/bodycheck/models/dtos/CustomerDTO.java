@@ -21,5 +21,6 @@ public class CustomerDTO {
    private Short height;
    private String gender;
    private String ethnicity;
+   private String target;
    private String observations;
 }

@@ -81,6 +81,11 @@ public class Customer {
    @Column(nullable = false)
    private Ethnicity ethnicity;
 
+   @NotBlank
+   @Size(max = 50)
+   @Column(length = 50)
+   private String target;
+
    @Size(max = 1000)
    @Column(length = 1000)
    private String observations;
