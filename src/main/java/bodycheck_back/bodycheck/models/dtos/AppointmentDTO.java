@@ -1,5 +1,6 @@
 package bodycheck_back.bodycheck.models.dtos;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class AppointmentDTO {
    private Long id;
    private CustomerDTO customer;
+   private LocalDate date;
    private LocalDateTime startTime;
    private LocalDateTime endTime;
    private String reason;

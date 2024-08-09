@@ -58,6 +58,7 @@ public class AppointmentService {
       return AppointmentDTO.builder()
             .id(appointment.getId())
             .customer(customerService.convertToDto(customer))
+            .date(appointment.getDate())
             .startTime(appointment.getStartTime())
             .endTime(appointment.getEndTime())
             .reason(appointment.getReason())
