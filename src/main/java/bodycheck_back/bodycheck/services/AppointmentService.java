@@ -52,12 +52,16 @@ public class AppointmentService {
    }
 
    public AppointmentDTO convertToDto(Appointment appointment) {
-      // Tengo que acceder al Customer mediante el Service ya que el FetchType.EAGER no me hace ni PUTO CASO :)
-      Customer customer = customerService.findById(appointment.getCustomer().getId()).orElseThrow();
+      // Accedemos al Customer relaccionado con el apointment si existe. Si no, lo mantenemos como null.
+      Customer customer = appointment.getCustomer() != null
+            ? customerService.findById(appointment.getCustomer().getId()).orElseThrow()
+            : null;
 
       return AppointmentDTO.builder()
             .id(appointment.getId())
             .customer(customerService.convertToDto(customer))
+            .customerName(appointment.getCustomerName())
+            .customerPhone(appointment.getCustomerPhone())
             .date(appointment.getDate())
             .startTime(appointment.getStartTime())
             .endTime(appointment.getEndTime())

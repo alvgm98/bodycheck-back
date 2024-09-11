@@ -36,10 +36,18 @@ public class Appointment {
    @JoinColumn(name = "user_id", nullable = false)
    private User user;
 
-   @NotNull
    @ManyToOne(fetch = FetchType.EAGER)
-   @JoinColumn(name = "customer_id", nullable = false)
+   @JoinColumn(name = "customer_id")
    private Customer customer;
+
+   @NotBlank
+   @Size(max = 120)
+   @Column(nullable = false, length = 120)
+   private String customerName;
+
+   @Size(max = 15)
+   @Column(length = 15)
+   private String customerPhone;
 
    @NotNull
    @Column(nullable = false)
