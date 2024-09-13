@@ -59,7 +59,7 @@ public class AppointmentService {
 
       return AppointmentDTO.builder()
             .id(appointment.getId())
-            .customer(customerService.convertToDto(customer))
+            .customer(customer != null ? customerService.convertToDto(customer) : null)
             .customerName(appointment.getCustomerName())
             .customerPhone(appointment.getCustomerPhone())
             .date(appointment.getDate())

@@ -57,8 +57,9 @@ public class Customer {
    @Column(length = 100)
    private String email;
 
+   @NotBlank
    @Size(max = 15)
-   @Column(length = 15)
+   @Column(nullable = false, length = 15)
    private String phone;
 
    @NotNull

@@ -45,8 +45,9 @@ public class Appointment {
    @Column(nullable = false, length = 120)
    private String customerName;
 
+   @NotBlank
    @Size(max = 15)
-   @Column(length = 15)
+   @Column(nullable = false, length = 15)
    private String customerPhone;
 
    @NotNull
