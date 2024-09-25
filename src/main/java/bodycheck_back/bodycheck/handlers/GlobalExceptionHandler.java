@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import bodycheck_back.bodycheck.exceptions.AppointmentConflictException;
+import bodycheck_back.bodycheck.exceptions.AppointmentCustomerExpectedException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 
@@ -92,17 +93,33 @@ public class GlobalExceptionHandler {
       return ResponseEntity.status(HttpStatus.CONFLICT).build();
    }
 
+   /********** CUSTOM APPOINTMENT ERRORS **********/
    /**
     * Maneja las excepciones personalizadas AppointmentConflictException lanzadas cuando
     * se intenta dar de alta una cita que solapa con alguna otra cita.
     *
     * @param e la excepción de AppointmentConflictException capturada
-    * @return una ResponseEntity vacía con el estado HTTP CONFLICT
+    * @return una ResponseEntity con estado HTTP CONFLICT y el mensaje de error: "Ya hay una cita programada en este horario."
     */
+   @ResponseStatus(HttpStatus.CONFLICT)
    @ExceptionHandler(AppointmentConflictException.class)
    public ResponseEntity<String> handleAppointmentConflictException(AppointmentConflictException e) {
       log.error("Appointment conflict: {}", e.getMessage());
-      return ResponseEntity.status(HttpStatus.CONFLICT).build();
+      return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+   }
+
+   /**
+    * Maneja las excepciones personalizadas AppointmentCustomerExpectedException lanzadas cuando
+    * se intenta dar de alta una cita en la que no esta vinculado ningun Customer o ningun número de teléfono y nombre.
+    *
+    * @param e la excepción de AppointmentConflictException capturada
+    * @return una ResponseEntity con estado HTTP CONFLICT y el mensaje de error: "Es necesario vincular la cita a un cliente o a un nombre y teléfono."
+    */
+   @ResponseStatus(HttpStatus.BAD_REQUEST)
+   @ExceptionHandler(AppointmentCustomerExpectedException.class)
+   public ResponseEntity<String> handleAppointmentCustomerExpectedException(AppointmentCustomerExpectedException e) {
+      log.error("Appointment customer expected: {}", e.getMessage());
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
    }
 
    /**

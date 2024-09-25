@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import bodycheck_back.bodycheck.auth.services.AuthService;
 import bodycheck_back.bodycheck.exceptions.AppointmentConflictException;
+import bodycheck_back.bodycheck.exceptions.AppointmentCustomerExpectedException;
 import bodycheck_back.bodycheck.models.dtos.AppointmentDTO;
 import bodycheck_back.bodycheck.models.entities.Appointment;
 import bodycheck_back.bodycheck.models.entities.Customer;
@@ -41,6 +42,12 @@ public class AppointmentService {
       appointment.setUser(authService.getUserFromToken());
       // IMPORTANTE! sumo 1s al startTime para que no encuentre conflicto cuando una cita empieza justo cuando otra acaba.
       appointment.setStartTime(appointment.getStartTime().plusSeconds(1));
+
+      // Comprobamos que el appointment este relacionado a un Customer o un Futuro Customer.
+      if ((appointment.getCustomer() == null || appointment.getCustomer().getId() == null)
+            && (appointment.getCustomerName() == null || appointment.getCustomerPhone() == null || appointment.getCustomerName() == "" || appointment.getCustomerPhone() == "")) {
+         throw new AppointmentCustomerExpectedException();
+      }
 
       // Comprobamos que no exista ninguna cita solapada.
       List<Appointment> conflictingAppointments = findConflictingAppointments(appointment);

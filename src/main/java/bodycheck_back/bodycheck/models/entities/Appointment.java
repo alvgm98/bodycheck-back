@@ -40,14 +40,12 @@ public class Appointment {
    @JoinColumn(name = "customer_id")
    private Customer customer;
 
-   @NotBlank
    @Size(max = 120)
-   @Column(nullable = false, length = 120)
+   @Column(length = 120)
    private String customerName;
 
-   @NotBlank
    @Size(max = 15)
-   @Column(nullable = false, length = 15)
+   @Column(length = 15)
    private String customerPhone;
 
    @NotNull
