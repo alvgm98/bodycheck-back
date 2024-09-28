@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import bodycheck_back.bodycheck.exceptions.AppointmentConflictException;
 import bodycheck_back.bodycheck.exceptions.AppointmentCustomerExpectedException;
+import bodycheck_back.bodycheck.exceptions.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,25 +54,25 @@ public class GlobalExceptionHandler {
     */
    @ResponseStatus(HttpStatus.BAD_REQUEST)
    @ExceptionHandler(IllegalArgumentException.class)
-   public ResponseEntity<String> handlerArgumentException(IllegalArgumentException e) {
+   public ResponseEntity<ErrorResponse> handlerArgumentException(IllegalArgumentException e) {
       log.error("Illegal argument exception: {}", e.getMessage());
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
    }
 
    // Manejador para excepciones de autenticación - BadCredentialsException
    @ResponseStatus(HttpStatus.UNAUTHORIZED)
    @ExceptionHandler(BadCredentialsException.class)
-   public ResponseEntity<String> handleBadCredentialsException(BadCredentialsException e) {
+   public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException e) {
       log.error("Bad credentials: {}", e.getMessage());
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("Email o Contraseña incorrectos."));
    }
 
    // Manejador para excepciones de autenticación - UsernameNotFoundException
    @ResponseStatus(HttpStatus.UNAUTHORIZED)
    @ExceptionHandler(UsernameNotFoundException.class)
-   public ResponseEntity<String> handleUsernameNotFoundException(UsernameNotFoundException e) {
+   public ResponseEntity<ErrorResponse> handleUsernameNotFoundException(UsernameNotFoundException e) {
       log.error("User not found: {}", e.getMessage());
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("No se encuentra al usuario."));
    }
 
    /**
@@ -103,9 +104,9 @@ public class GlobalExceptionHandler {
     */
    @ResponseStatus(HttpStatus.CONFLICT)
    @ExceptionHandler(AppointmentConflictException.class)
-   public ResponseEntity<String> handleAppointmentConflictException(AppointmentConflictException e) {
+   public ResponseEntity<ErrorResponse> handleAppointmentConflictException(AppointmentConflictException e) {
       log.error("Appointment conflict: {}", e.getMessage());
-      return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+      return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(e.getMessage()));
    }
 
    /**
@@ -117,9 +118,9 @@ public class GlobalExceptionHandler {
     */
    @ResponseStatus(HttpStatus.BAD_REQUEST)
    @ExceptionHandler(AppointmentCustomerExpectedException.class)
-   public ResponseEntity<String> handleAppointmentCustomerExpectedException(AppointmentCustomerExpectedException e) {
+   public ResponseEntity<ErrorResponse> handleAppointmentCustomerExpectedException(AppointmentCustomerExpectedException e) {
       log.error("Appointment customer expected: {}", e.getMessage());
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
    }
 
    /**
