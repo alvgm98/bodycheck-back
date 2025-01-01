@@ -6,14 +6,9 @@ import java.util.Map;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
-import bodycheck_back.bodycheck.exceptions.AppointmentConflictException;
-import bodycheck_back.bodycheck.exceptions.AppointmentCustomerExpectedException;
 import bodycheck_back.bodycheck.exceptions.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +27,6 @@ public class GlobalExceptionHandler {
     *         y sus respectivos mensajes de error,
     *         y un estado HTTP BAD REQUEST
     */
-   @ResponseStatus(HttpStatus.BAD_REQUEST)
    @ExceptionHandler(ConstraintViolationException.class)
    public ResponseEntity<Map<String, String>> handleConstraintViolationExceptions(ConstraintViolationException e) {
       Map<String, String> errors = new HashMap<>();
@@ -43,36 +37,6 @@ public class GlobalExceptionHandler {
       });
       log.error("Constraint violations: {}", errors);
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
-   }
-
-   /**
-    * Maneja las excepciones de IllegalArgumentException.
-    * 
-    * @param e la excepción IllegalArgumentException capturada
-    * @return una ResponseEntity con el mensaje de error y el estado HTTP BAD
-    *         REQUEST
-    */
-   @ResponseStatus(HttpStatus.BAD_REQUEST)
-   @ExceptionHandler(IllegalArgumentException.class)
-   public ResponseEntity<ErrorResponse> handlerArgumentException(IllegalArgumentException e) {
-      log.error("Illegal argument exception: {}", e.getMessage());
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
-   }
-
-   // Manejador para excepciones de autenticación - BadCredentialsException
-   @ResponseStatus(HttpStatus.UNAUTHORIZED)
-   @ExceptionHandler(BadCredentialsException.class)
-   public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException e) {
-      log.error("Bad credentials: {}", e.getMessage());
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("Email o Contraseña incorrectos."));
-   }
-
-   // Manejador para excepciones de autenticación - UsernameNotFoundException
-   @ResponseStatus(HttpStatus.UNAUTHORIZED)
-   @ExceptionHandler(UsernameNotFoundException.class)
-   public ResponseEntity<ErrorResponse> handleUsernameNotFoundException(UsernameNotFoundException e) {
-      log.error("User not found: {}", e.getMessage());
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("No se encuentra al usuario."));
    }
 
    /**
@@ -87,39 +51,23 @@ public class GlobalExceptionHandler {
     * @param e la excepción de DataIntegrityViolationException capturada
     * @return una ResponseEntity vacía con el estado HTTP CONFLICT
     */
-   @ResponseStatus(HttpStatus.CONFLICT)
    @ExceptionHandler(DataIntegrityViolationException.class)
-   public ResponseEntity<String> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
+   public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
       log.error("Data integrity violation: {}", e.getMessage());
-      return ResponseEntity.status(HttpStatus.CONFLICT).build();
-   }
-
-   /********** CUSTOM APPOINTMENT ERRORS **********/
-   /**
-    * Maneja las excepciones personalizadas AppointmentConflictException lanzadas cuando
-    * se intenta dar de alta una cita que solapa con alguna otra cita.
-    *
-    * @param e la excepción de AppointmentConflictException capturada
-    * @return una ResponseEntity con estado HTTP CONFLICT y el mensaje de error: "Ya hay una cita programada en este horario."
-    */
-   @ResponseStatus(HttpStatus.CONFLICT)
-   @ExceptionHandler(AppointmentConflictException.class)
-   public ResponseEntity<ErrorResponse> handleAppointmentConflictException(AppointmentConflictException e) {
-      log.error("Appointment conflict: {}", e.getMessage());
       return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(e.getMessage()));
    }
 
    /**
-    * Maneja las excepciones personalizadas AppointmentCustomerExpectedException lanzadas cuando
-    * se intenta dar de alta una cita en la que no esta vinculado ningun Customer o ningun número de teléfono y nombre.
-    *
-    * @param e la excepción de AppointmentConflictException capturada
-    * @return una ResponseEntity con estado HTTP CONFLICT y el mensaje de error: "Es necesario vincular la cita a un cliente o a un nombre y teléfono."
+    * Maneja las excepciones de IllegalArgumentException, que se lanzan cuando se
+    * pasa un argumento no válido a un método o función.
+    * 
+    * @param e la excepción IllegalArgumentException capturada
+    * @return una ResponseEntity con el mensaje de error y el estado HTTP BAD
+    *         REQUEST
     */
-   @ResponseStatus(HttpStatus.BAD_REQUEST)
-   @ExceptionHandler(AppointmentCustomerExpectedException.class)
-   public ResponseEntity<ErrorResponse> handleAppointmentCustomerExpectedException(AppointmentCustomerExpectedException e) {
-      log.error("Appointment customer expected: {}", e.getMessage());
+   @ExceptionHandler(IllegalArgumentException.class)
+   public ResponseEntity<ErrorResponse> handlerArgumentException(IllegalArgumentException e) {
+      log.error("Illegal argument exception: {}", e.getMessage());
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
    }
 
@@ -129,11 +77,10 @@ public class GlobalExceptionHandler {
     * @param e la excepción RuntimeException capturada
     * @return una ResponseEntity vacía con el estado HTTP BAD GATEWAY
     */
-   @ResponseStatus(HttpStatus.BAD_GATEWAY)
    @ExceptionHandler(RuntimeException.class)
-   public ResponseEntity<String> handlerRuntimeException(RuntimeException e) {
+   public ResponseEntity<ErrorResponse> handlerRuntimeException(RuntimeException e) {
       log.error("Runtime exception: {}", e.getMessage());
-      return ResponseEntity.status(HttpStatus.BAD_GATEWAY).build();
+      return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ErrorResponse(e.getMessage()));
    }
 
    /**
@@ -142,11 +89,10 @@ public class GlobalExceptionHandler {
     * @param e la excepción genérica capturada
     * @return una ResponseEntity vacía con el estado HTTP INTERNAL SERVER ERROR
     */
-   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
    @ExceptionHandler(Exception.class)
-   public ResponseEntity<String> handleGeneralException(Exception e) {
+   public ResponseEntity<ErrorResponse> handleGeneralException(Exception e) {
       log.error("General exception: {}", e.getMessage());
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse(e.getMessage()));
    }
 
 }

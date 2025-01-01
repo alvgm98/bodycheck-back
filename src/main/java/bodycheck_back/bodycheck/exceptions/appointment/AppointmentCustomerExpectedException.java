@@ -1,4 +1,4 @@
-package bodycheck_back.bodycheck.exceptions;
+package bodycheck_back.bodycheck.exceptions.appointment;
 
 public class AppointmentCustomerExpectedException extends RuntimeException {
    public AppointmentCustomerExpectedException() {

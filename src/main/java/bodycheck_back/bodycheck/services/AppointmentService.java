@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import bodycheck_back.bodycheck.auth.services.AuthService;
-import bodycheck_back.bodycheck.exceptions.AppointmentConflictException;
-import bodycheck_back.bodycheck.exceptions.AppointmentCustomerExpectedException;
+import bodycheck_back.bodycheck.exceptions.appointment.AppointmentConflictException;
+import bodycheck_back.bodycheck.exceptions.appointment.AppointmentCustomerExpectedException;
 import bodycheck_back.bodycheck.models.dtos.AppointmentDTO;
 import bodycheck_back.bodycheck.models.entities.Appointment;
 import bodycheck_back.bodycheck.models.entities.Customer;
