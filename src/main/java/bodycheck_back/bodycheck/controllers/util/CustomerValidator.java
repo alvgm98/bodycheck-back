@@ -2,11 +2,12 @@ package bodycheck_back.bodycheck.controllers.util;
 
 import java.util.Optional;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import bodycheck_back.bodycheck.auth.services.AuthService;
+import bodycheck_back.bodycheck.exceptions.customer.CustomerNotFoundException;
+import bodycheck_back.bodycheck.exceptions.customer.UnauthorizedCustomerAccessException;
+import bodycheck_back.bodycheck.models.dtos.CustomerDTO;
 import bodycheck_back.bodycheck.models.entities.Customer;
 import bodycheck_back.bodycheck.models.entities.User;
 import bodycheck_back.bodycheck.services.CustomerService;
@@ -20,39 +21,34 @@ public class CustomerValidator {
    private final AuthService authService;
 
    /**
-    * Validates if a Customer exists and if it belongs to the User making the
-    * request.
+    * Valida si un Cliente existe y si pertenece al Usuario que realiza la solicitud.
     * <p>
-    * This method checks if the Customer with the given ID exists in the database.
-    * If it does,
-    * it then verifies if the Customer is associated with the currently
-    * authenticated User.
+    * Este método verifica si el Cliente con el ID proporcionado existe en la base de datos.
+    * Si existe, valida si el Cliente está asociado con el Usuario actualmente autenticado.
+    * Si alguna validación falla, se lanza una excepción adecuada.
     * </p>
     * 
-    * @param customerId the ID of the Customer to validate
-    * @return a ResponseEntity with:
-    *         <ul>
-    *         <li>status 404 (Not Found) if the Customer does not exist</li>
-    *         <li>status 403 (Forbidden) if the Customer does not belong to the
-    *         authenticated User</li>
-    *         <li>status 200 (OK) with the Customer in the body if validation is
-    *         successful</li>
-    *         </ul>
+    * @param customerId el ID del Cliente que se desea validar
+    * @return El cliente validado en formato CustomerDTO.
+    * @throws CustomerNotFoundException           - Si el Cliente no existe.
+    * @throws UnauthorizedCustomerAccessException - Si el Cliente no pertenece al Usuario autenticado.
     */
-   public ResponseEntity<?> validateCustomerOwnership(Long customerId) {
+   public CustomerDTO validateCustomerOwnership(Long customerId) {
       Optional<Customer> o = customerService.findById(customerId);
+      // Comprobamos la existencia del Customer
       if (!o.isPresent()) {
-         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+         throw new CustomerNotFoundException();
       }
 
       Customer c = o.get();
       User user = authService.getUserFromToken();
-
+      // Comprobamos que el Customer pertenezca al User
       if (!c.getUser().getId().equals(user.getId())) {
-         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+         throw new UnauthorizedCustomerAccessException();
       }
 
-      return ResponseEntity.ok(customerService.convertToDto(c));
+      // Devolvemos el CustomerDTO
+      return customerService.convertToDto(c);
    }
 
 }

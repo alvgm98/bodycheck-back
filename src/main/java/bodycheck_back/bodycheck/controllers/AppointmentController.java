@@ -33,11 +33,9 @@ public class AppointmentController {
    @GetMapping("/customer/{customerId}")
    public ResponseEntity<List<AppointmentDTO>> getAppointmentsByCustomer(@PathVariable Long customerId) {
       // Comprueba que el Customer existe y pertenece al User de la petición.
-      ResponseEntity<?> validationReponse = customerValidator.validateCustomerOwnership(customerId);
-      if (!validationReponse.getStatusCode().is2xxSuccessful()) {
-         return ResponseEntity.status(validationReponse.getStatusCode()).build();
-      }
+      customerValidator.validateCustomerOwnership(customerId);
 
+      // Devolvemos todas las citas del Cliente.
       return ResponseEntity.ok(appointmentService.findAllByCustomer(customerId));
    }
 

@@ -42,30 +42,23 @@ public class CustomerController {
 
    @GetMapping("/{id}")
    public ResponseEntity<CustomerDTO> getCustomer(@PathVariable Long id) {
-      // Comprueba que el Customer existe y pertenece al User de la petición.
-      ResponseEntity<?> validationReponse = customerValidator.validateCustomerOwnership(id);
-      if (!validationReponse.getStatusCode().is2xxSuccessful()) {
-         return ResponseEntity.status(validationReponse.getStatusCode()).build();
-      }
+      // Obtenemos el CustomerDTO comprobando que existe y pertenece al User de la petición.
+      CustomerDTO customerDTO = customerValidator.validateCustomerOwnership(id);
 
-      // Devuelve el Customer con DTO.
-      return ResponseEntity.ok((CustomerDTO) validationReponse.getBody());
+      // Devuelve el Customer como DTO.
+      return ResponseEntity.ok(customerDTO);
    }
 
-   @SuppressWarnings("null")
    @GetMapping("/detailed/{id}")
    public ResponseEntity<CustomerDetailedDTO> getCustomerDetailed(@PathVariable Long id) {
-      // Comprueba que el Customer existe y pertenece al User de la petición.
-      ResponseEntity<?> validationReponse = customerValidator.validateCustomerOwnership(id);
-      if (!validationReponse.getStatusCode().is2xxSuccessful()) {
-         return ResponseEntity.status(validationReponse.getStatusCode()).build();
-      }
+      // Obtenemos el CustomerDTO comprobando que existe y pertenece al User de la petición.
+      CustomerDTO customerDTO = customerValidator.validateCustomerOwnership(id);
 
-      // Extraemos los datos ya validados del Customer.
-      CustomerDTO customerDTO = (CustomerDTO) validationReponse.getBody();
+      // Obtenemos sus datos de Mediciones y Citas.
       List<MeasurementDTO> measurements = measurementService.getList(customerDTO.getId());
       List<AppointmentDTO> appointments = appointmentService.findAllByCustomer(customerDTO.getId());
 
+      // Lo transformamos en CustomerDetailedDTO.
       CustomerDetailedDTO customerDetailedDTO = customerService.getCustomerDetailed(customerDTO, measurements, appointments);
       // Devuelve el Customer con DTO.
       return ResponseEntity.ok(customerDetailedDTO);
@@ -80,10 +73,7 @@ public class CustomerController {
    @PutMapping("/{id}")
    public ResponseEntity<CustomerDTO> updateCustomer(@PathVariable Long id, @RequestBody Customer customer) {
       // Comprueba que el Customer existe y pertenece al User de la petición.
-      ResponseEntity<?> validationReponse = customerValidator.validateCustomerOwnership(id);
-      if (!validationReponse.getStatusCode().is2xxSuccessful()) {
-         return ResponseEntity.status(validationReponse.getStatusCode()).build();
-      }
+      customerValidator.validateCustomerOwnership(id);
 
       // Se actualiza el Customer y se devuelve como DTO.
       return ResponseEntity.ok(customerService.update(id, customer));
@@ -92,10 +82,7 @@ public class CustomerController {
    @DeleteMapping("/{id}")
    public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
       // Comprueba que el Customer existe y pertenece al User de la petición.
-      ResponseEntity<?> validationReponse = customerValidator.validateCustomerOwnership(id);
-      if (!validationReponse.getStatusCode().is2xxSuccessful()) {
-         return ResponseEntity.status(validationReponse.getStatusCode()).build();
-      }
+      customerValidator.validateCustomerOwnership(id);
 
       // Se elimina el Customer.
       customerService.delete(id);
