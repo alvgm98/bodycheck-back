@@ -25,6 +25,12 @@ public class Circumference {
    private Long id;
 
    @Column(precision = 3, scale = 1)
+   private BigDecimal neck;
+
+   @Column(precision = 3, scale = 1)
+   private BigDecimal chest;
+
+   @Column(precision = 3, scale = 1)
    private BigDecimal armRelaxed;
 
    @Column(precision = 3, scale = 1)
