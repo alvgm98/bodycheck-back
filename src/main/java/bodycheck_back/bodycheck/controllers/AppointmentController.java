@@ -11,6 +11,7 @@ import bodycheck_back.bodycheck.controllers.util.CustomerValidator;
 import bodycheck_back.bodycheck.models.dtos.AppointmentDTO;
 import bodycheck_back.bodycheck.models.entities.Appointment;
 import bodycheck_back.bodycheck.services.AppointmentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,7 +41,7 @@ public class AppointmentController {
    }
 
    @PostMapping()
-   public ResponseEntity<?> createAppointment(@RequestBody Appointment appointment) {
+   public ResponseEntity<?> createAppointment(@RequestBody @Valid Appointment appointment) {
       return ResponseEntity.ok(appointmentService.create(appointment));
    }  
 }

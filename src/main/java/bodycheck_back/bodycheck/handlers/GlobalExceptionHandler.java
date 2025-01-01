@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -18,8 +19,37 @@ import lombok.extern.slf4j.Slf4j;
 public class GlobalExceptionHandler {
 
    /**
+    * Maneja las excepciones de MethodArgumentNotValidException lanzadas cuando fallan 
+    * las validaciones a nivel de controlador.
+    * 
+    * <p>
+    * Este método captura la excepción MethodArgumentNotValidException, que se
+    * produce cuando el RequestBody no pasa las validaciones definidas por las anotaciones
+    * de Bean Validation (como @NotNull, @Size, @Email, etc.) en el modelo de datos. 
+    * Extrae los errores de validación y devuelve 
+    * una respuesta HTTP con estado 400 (Bad Request) y un mapa que contiene
+    * los nombres de los campos con errores y sus respectivos mensajes de validación.
+    * </p>
+    * 
+    * @param e la excepción MethodArgumentNotValidException capturada, que contiene
+    *          los errores de validación
+    * @return una ResponseEntity que contiene un mapa con los nombres de los campos
+    *         y sus respectivos mensajes de error,
+    *         y un estado HTTP BAD REQUEST
+    */
+   @ExceptionHandler(MethodArgumentNotValidException.class)
+   public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException e) {
+      Map<String, String> errors = new HashMap<>();
+      e.getBindingResult().getFieldErrors().forEach(error -> {
+         errors.put(error.getField(), error.getDefaultMessage());
+      });
+      log.error("Validation violations (Controller): {}", errors);
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+   }
+
+   /**
     * Maneja las excepciones de ConstraintViolationException lanzadas cuando fallan
-    * las validaciones a nivel de modelo.
+    * las validaciones a nivel de servicio.
     * 
     * @param e la excepción de ConstraintViolationException capturada que contiene
     *          detalles sobre las violaciones de las restricciones
@@ -35,7 +65,7 @@ public class GlobalExceptionHandler {
          String errorMessage = violation.getMessage();
          errors.put(fieldName, errorMessage);
       });
-      log.error("Constraint violations: {}", errors);
+      log.error("Constraint violations (Service): {}", errors);
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
    }
 
@@ -53,7 +83,7 @@ public class GlobalExceptionHandler {
     */
    @ExceptionHandler(DataIntegrityViolationException.class)
    public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
-      log.error("Data integrity violation: {}", e.getMessage());
+      log.error("Data integrity violation (Database): {}", e.getMessage());
       return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(e.getMessage()));
    }
 

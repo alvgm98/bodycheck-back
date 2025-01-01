@@ -7,6 +7,7 @@ import bodycheck_back.bodycheck.controllers.util.CustomerValidator;
 import bodycheck_back.bodycheck.models.dtos.MeasurementDTO;
 import bodycheck_back.bodycheck.models.entities.measurement.Measurement;
 import bodycheck_back.bodycheck.services.MeasurementService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class MeasurementController {
    }
 
    @PostMapping()
-   public ResponseEntity<MeasurementDTO> createMeasurement(@RequestBody Measurement measurement) {
+   public ResponseEntity<MeasurementDTO> createMeasurement(@RequestBody @Valid Measurement measurement) {
       // Comprueba que el Customer existe y pertenece al User de la petición.
       customerValidator.validateCustomerOwnership(measurement.getCustomer().getId());
 
@@ -45,7 +46,7 @@ public class MeasurementController {
    }
 
    @PutMapping("/{measurementId}")
-   public ResponseEntity<MeasurementDTO> updateMeasurement(@PathVariable Long measurementId, @RequestBody Measurement measurement) {
+   public ResponseEntity<MeasurementDTO> updateMeasurement(@PathVariable Long measurementId, @RequestBody @Valid Measurement measurement) {
       // Comprueba que el Customer existe y pertenece al User de la petición.
       customerValidator.validateCustomerOwnership(measurement.getCustomer().getId());
 

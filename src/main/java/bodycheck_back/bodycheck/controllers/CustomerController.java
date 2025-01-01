@@ -12,6 +12,7 @@ import bodycheck_back.bodycheck.models.entities.Customer;
 import bodycheck_back.bodycheck.services.AppointmentService;
 import bodycheck_back.bodycheck.services.CustomerService;
 import bodycheck_back.bodycheck.services.MeasurementService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -65,13 +66,13 @@ public class CustomerController {
    }
 
    @PostMapping()
-   public ResponseEntity<CustomerDTO> createCustomer(@RequestBody Customer customer) {
+   public ResponseEntity<CustomerDTO> createCustomer(@RequestBody @Valid Customer customer) {
       // Se crea el Customer y se devuelve como DTO.
       return ResponseEntity.ok(customerService.create(customer));
    }
 
    @PutMapping("/{id}")
-   public ResponseEntity<CustomerDTO> updateCustomer(@PathVariable Long id, @RequestBody Customer customer) {
+   public ResponseEntity<CustomerDTO> updateCustomer(@PathVariable Long id, @RequestBody @Valid Customer customer) {
       // Comprueba que el Customer existe y pertenece al User de la petición.
       customerValidator.validateCustomerOwnership(id);
 
