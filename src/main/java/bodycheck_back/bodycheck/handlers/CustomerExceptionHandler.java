@@ -28,6 +28,7 @@ public class CustomerExceptionHandler {
     */
    @ExceptionHandler(CustomerNotFoundException.class)
    public ResponseEntity<ErrorResponse> handleCustomerNotFound(CustomerNotFoundException e) {
+      log.error("Customer Not Found: {}", e.getMessage());
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(e.getMessage()));
    }
 
@@ -45,6 +46,7 @@ public class CustomerExceptionHandler {
     */
    @ExceptionHandler(UnauthorizedCustomerAccessException.class)
    public ResponseEntity<ErrorResponse> handleUnauthorizedAccess(UnauthorizedCustomerAccessException e) {
+      log.error("Customer Access Forbidden: {}", e.getMessage());
       return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(e.getMessage()));
    }
 }
