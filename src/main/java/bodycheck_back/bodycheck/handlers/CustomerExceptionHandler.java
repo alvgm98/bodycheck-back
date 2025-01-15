@@ -1,5 +1,6 @@
 package bodycheck_back.bodycheck.handlers;
 
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,6 +11,7 @@ import bodycheck_back.bodycheck.exceptions.customer.CustomerNotFoundException;
 import bodycheck_back.bodycheck.exceptions.customer.UnauthorizedCustomerAccessException;
 import lombok.extern.slf4j.Slf4j;
 
+@Order(1)
 @RestControllerAdvice
 @Slf4j
 public class CustomerExceptionHandler {

@@ -3,6 +3,7 @@ package bodycheck_back.bodycheck.handlers;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import bodycheck_back.bodycheck.exceptions.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 
+@Order(2)
 @ControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {

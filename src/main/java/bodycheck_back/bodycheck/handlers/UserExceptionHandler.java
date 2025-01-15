@@ -1,5 +1,6 @@
 package bodycheck_back.bodycheck.handlers;
 
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import bodycheck_back.bodycheck.exceptions.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 
+@Order(1)
 @ControllerAdvice
 @Slf4j
 public class UserExceptionHandler {
