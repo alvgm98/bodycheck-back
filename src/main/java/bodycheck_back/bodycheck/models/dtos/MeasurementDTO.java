@@ -16,7 +16,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MeasurementDTO {
    private Long id;
-   private Integer session;
    private LocalDate date;
    private BigDecimal weight;
    private Circumference circumference;

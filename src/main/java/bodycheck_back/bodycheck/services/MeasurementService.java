@@ -37,7 +37,6 @@ public class MeasurementService {
    public MeasurementDTO convertToDto(Measurement measurement) {
       return MeasurementDTO.builder()
             .id(measurement.getId())
-            .session(measurement.getSession())
             .date(measurement.getDate())
             .weight(measurement.getWeight())
             .circumference(measurement.getCircumference())

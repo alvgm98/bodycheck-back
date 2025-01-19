@@ -36,10 +36,6 @@ public class Measurement {
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "customer_id", nullable = false)
    private Customer customer;
-
-   @NotNull
-   @Column(nullable = false)
-   private Integer session;
    
    @NotNull
    @Column(nullable = false)
