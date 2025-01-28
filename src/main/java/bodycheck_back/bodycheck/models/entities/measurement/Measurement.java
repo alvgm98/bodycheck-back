@@ -1,6 +1,5 @@
 package bodycheck_back.bodycheck.models.entities.measurement;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import bodycheck_back.bodycheck.models.entities.Customer;
@@ -43,7 +42,7 @@ public class Measurement {
 
    @NotNull
    @Column(nullable = false, precision = 3, scale = 1)
-   private BigDecimal weight;
+   private Integer weight;
 
    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
    @JoinColumn(name = "circumference_id")

@@ -1,6 +1,5 @@
 package bodycheck_back.bodycheck.models.dtos;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import bodycheck_back.bodycheck.models.entities.measurement.Circumference;
@@ -17,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class MeasurementDTO {
    private Long id;
    private LocalDate date;
-   private BigDecimal weight;
+   private Integer weight;
    private Circumference circumference;
    private Skinfold skinfold;
    private String observations;
