@@ -13,10 +13,13 @@ import bodycheck_back.bodycheck.models.entities.Appointment;
 import bodycheck_back.bodycheck.services.AppointmentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("/api/appointments")
@@ -43,5 +46,29 @@ public class AppointmentController {
    @PostMapping()
    public ResponseEntity<?> createAppointment(@RequestBody @Valid Appointment appointment) {
       return ResponseEntity.ok(appointmentService.create(appointment));
-   }  
+   }
+
+   @PutMapping("/{id}")
+   public ResponseEntity<?> updateAppointment(@PathVariable Long id, @RequestBody @Valid Appointment appointment) {
+      // Compruebo que el usuario de la cita le pertenezca, si lo hay
+      if (appointment.getCustomer() != null) {
+         customerValidator.validateCustomerOwnership(appointment.getCustomer().getId());
+      }
+
+      return ResponseEntity.ok(appointmentService.update(id, appointment));
+   }
+
+   @DeleteMapping("/{id}")
+   public ResponseEntity<?> deleteAppointment(@PathVariable Long id) {
+      // Compruebo que la cita siga existiendo
+      AppointmentDTO appointment = appointmentService.findById(id);
+
+      // Compruebo que el usuario de la cita le pertenezca, si lo hay
+      if (appointment.getCustomer() != null) {
+         customerValidator.validateCustomerOwnership(appointment.getCustomer().getId());
+      }
+
+      appointmentService.delete(id);
+      return ResponseEntity.noContent().build();
+   }
 }

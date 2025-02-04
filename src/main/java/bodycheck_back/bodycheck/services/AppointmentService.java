@@ -2,6 +2,7 @@ package bodycheck_back.bodycheck.services;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -23,6 +24,12 @@ public class AppointmentService {
    private final AppointmentRepository appointmentRepository;
    private final AuthService authService;
    private final CustomerService customerService;
+
+   public AppointmentDTO findById(Long id) {
+      Optional<Appointment> o = appointmentRepository.findById(id);
+
+      return convertToDto(o.orElseThrow());
+   }
 
    public List<AppointmentDTO> findAllByDate(LocalDate date) {
       List<Appointment> appointments = appointmentRepository.findAllByUserAndDate(authService.getUserFromToken(), date);
@@ -56,6 +63,34 @@ public class AppointmentService {
          throw new AppointmentConflictException();
       }
       return convertToDto(appointmentRepository.save(appointment));
+   }
+
+   @Transactional
+   public AppointmentDTO update(Long id, Appointment appointment) {
+      appointment.setId(id);
+      appointment.setUser(authService.getUserFromToken());
+      // IMPORTANTE! sumo 1s al startTime para que no encuentre conflicto cuando una cita empieza justo cuando otra acaba.
+      appointment.setStartTime(appointment.getStartTime().plusSeconds(1));
+
+      // Comprobamos que el appointment este relacionado a un Customer o un Futuro Customer.
+      if ((appointment.getCustomer() == null || appointment.getCustomer().getId() == null)
+            && (appointment.getCustomerName() == null || appointment.getCustomerPhone() == null || appointment.getCustomerName() == "" || appointment.getCustomerPhone() == "")) {
+         throw new AppointmentCustomerExpectedException();
+      }
+
+      // Comprobamos que no exista ninguna cita solapada.
+      List<Appointment> conflictingAppointments = findConflictingAppointments(appointment);
+
+      // Comprobamos que no exista ninguna cita solapada, exceptuando si misma.
+      if (conflictingAppointments.stream().anyMatch(a -> !a.getId().equals(id))) {
+         throw new AppointmentConflictException();
+      }
+      return convertToDto(appointmentRepository.save(appointment));
+   }
+
+   @Transactional
+   public void delete(Long id) {
+      appointmentRepository.deleteById(id);
    }
 
    public AppointmentDTO convertToDto(Appointment appointment) {
