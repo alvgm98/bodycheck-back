@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import bodycheck_back.bodycheck.auth.services.AuthService;
 import bodycheck_back.bodycheck.exceptions.appointment.AppointmentConflictException;
 import bodycheck_back.bodycheck.exceptions.appointment.AppointmentCustomerExpectedException;
+import bodycheck_back.bodycheck.exceptions.appointment.AppointmentNotFoundException;
 import bodycheck_back.bodycheck.models.dtos.AppointmentDTO;
 import bodycheck_back.bodycheck.models.entities.Appointment;
 import bodycheck_back.bodycheck.models.entities.Customer;
@@ -28,7 +29,7 @@ public class AppointmentService {
    public AppointmentDTO findById(Long id) {
       Optional<Appointment> o = appointmentRepository.findById(id);
 
-      return convertToDto(o.orElseThrow());
+      return convertToDto(o.orElseThrow(AppointmentNotFoundException::new));
    }
 
    public List<AppointmentDTO> findAllByDate(LocalDate date) {
