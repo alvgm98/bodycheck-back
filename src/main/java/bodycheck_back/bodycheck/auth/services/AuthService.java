@@ -1,5 +1,7 @@
 package bodycheck_back.bodycheck.auth.services;
 
+import java.io.IOException;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,7 +15,9 @@ import bodycheck_back.bodycheck.auth.models.RegisterRequest;
 import bodycheck_back.bodycheck.models.entities.User;
 import bodycheck_back.bodycheck.models.enums.Role;
 import bodycheck_back.bodycheck.repositories.UserRepository;
+import bodycheck_back.bodycheck.services.MailService;
 import bodycheck_back.bodycheck.services.UserService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -25,9 +29,11 @@ public class AuthService {
    private final PasswordEncoder passwordEncoder;
    private final AuthenticationManager authenticationManager;
    private final UserService userService;
+   private final MailService mailService;
 
    public AuthResponse login(LoginRequest request) {
-      authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+      authenticationManager
+            .authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
       UserDetails user = userRepository.findByUsername(request.getUsername()).orElseThrow();
       String token = jwtService.getToken(user);
       return AuthResponse.builder()
@@ -48,6 +54,12 @@ public class AuthService {
             .build();
 
       userRepository.save(user);
+
+      try {
+         mailService.sendWelcomeEmail(user.getUsername(), user.getFirstName());
+      } catch (MessagingException | IOException e) {
+         e.printStackTrace();
+      }
 
       return AuthResponse.builder()
             .token(jwtService.getToken(user))
