@@ -18,33 +18,33 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "circumferences")
-public class Circumference {
+@Table(name = "diameters")
+public class Diameter {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    private Long id;
 
    @Column(precision = 5, scale = 2)
-   private BigDecimal neck;
+   private BigDecimal biacromial;
 
    @Column(precision = 5, scale = 2)
-   private BigDecimal chest;
+   private BigDecimal biIliacCrest;
 
    @Column(precision = 5, scale = 2)
-   private BigDecimal armRelaxed;
+   private BigDecimal humeralBicondylar;
 
    @Column(precision = 5, scale = 2)
-   private BigDecimal armFlexed;
+   private BigDecimal femoralBicondylar;
 
    @Column(precision = 5, scale = 2)
-   private BigDecimal waist;
+   private BigDecimal bistyloid;
 
    @Column(precision = 5, scale = 2)
-   private BigDecimal hip;
+   private BigDecimal bimalleolar;
 
    @Column(precision = 5, scale = 2)
-   private BigDecimal thigh;
+   private BigDecimal transverseThoracic;
 
    @Column(precision = 5, scale = 2)
-   private BigDecimal calf;
+   private BigDecimal anteroposteriorThoracic;
 }

@@ -3,6 +3,7 @@ package bodycheck_back.bodycheck.models.dtos;
 import java.time.LocalDate;
 
 import bodycheck_back.bodycheck.models.entities.measurement.Circumference;
+import bodycheck_back.bodycheck.models.entities.measurement.Diameter;
 import bodycheck_back.bodycheck.models.entities.measurement.Skinfold;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,5 +20,6 @@ public class MeasurementDTO {
    private Integer weight;
    private Circumference circumference;
    private Skinfold skinfold;
+   private Diameter diameter;
    private String observations;
 }
