@@ -10,6 +10,7 @@ import bodycheck_back.bodycheck.exceptions.ErrorResponse;
 import bodycheck_back.bodycheck.exceptions.appointment.AppointmentConflictException;
 import bodycheck_back.bodycheck.exceptions.appointment.AppointmentCustomerExpectedException;
 import bodycheck_back.bodycheck.exceptions.appointment.AppointmentNotFoundException;
+import bodycheck_back.bodycheck.exceptions.appointment.UnauthorizedAppointmentAccessException;
 import lombok.extern.slf4j.Slf4j;
 
 @Order(1)
@@ -51,6 +52,25 @@ public class AppointmentExceptionHandler {
          AppointmentCustomerExpectedException e) {
       log.error("Appointment customer expected: {}", e.getMessage());
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
+   }
+
+   /**
+    * Maneja las excepciones de tipo UnauthorizedAppointmentAccessException lanzadas
+    * cuando un Usuario intenta acceder a un Cliente que no le pertenece.
+    * <p>
+    * Este método crea una respuesta con un estado HTTP 403 (Forbidden) y un cuerpo
+    * que contiene un mensaje de error detallado encapsulado en un objeto
+    * ErrorResponse.
+    * </p>
+    * 
+    * @param e la excepción UnauthorizedAppointmentAccessException capturada
+    * @return una ResponseEntity con estado HTTP 403 y el mensaje del error en el
+    *         cuerpo
+    */
+   @ExceptionHandler(UnauthorizedAppointmentAccessException.class)
+   public ResponseEntity<ErrorResponse> handleUnauthorizedAccess(UnauthorizedAppointmentAccessException e) {
+      log.error("Appointment Access Forbidden: {}", e.getMessage());
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(e.getMessage()));
    }
 
    /**

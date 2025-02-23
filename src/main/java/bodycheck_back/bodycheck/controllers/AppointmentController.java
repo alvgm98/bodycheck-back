@@ -60,14 +60,6 @@ public class AppointmentController {
 
    @DeleteMapping("/{id}")
    public ResponseEntity<?> deleteAppointment(@PathVariable Long id) {
-      // Compruebo que la cita siga existiendo
-      AppointmentDTO appointment = appointmentService.findById(id);
-
-      // Compruebo que el usuario de la cita le pertenezca, si lo hay
-      if (appointment.getCustomer() != null) {
-         customerValidator.validateCustomerOwnership(appointment.getCustomer().getId());
-      }
-
       appointmentService.delete(id);
       return ResponseEntity.noContent().build();
    }
