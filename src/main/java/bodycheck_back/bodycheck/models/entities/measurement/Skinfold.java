@@ -31,6 +31,12 @@ public class Skinfold {
    private BigDecimal biceps;
 
    @Column(precision = 5, scale = 2)
+   private BigDecimal pectoral;
+
+   @Column(precision = 5, scale = 2)
+   private BigDecimal midaxillary;
+
+   @Column(precision = 5, scale = 2)
    private BigDecimal subscapular;
 
    @Column(precision = 5, scale = 2)
