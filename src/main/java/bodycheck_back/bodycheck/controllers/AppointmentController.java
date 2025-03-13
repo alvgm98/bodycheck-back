@@ -58,6 +58,15 @@ public class AppointmentController {
       return ResponseEntity.ok(appointmentService.update(id, appointment));
    }
 
+   @PostMapping("/link-appointment/{customerId}/{appointmentId}")
+   public ResponseEntity<AppointmentDTO> linkAppointmentWithCustomer(@PathVariable Long customerId, @PathVariable Long appointmentId) {
+      // Comprueba que el Customer existe y pertenece al User de la petición.
+      customerValidator.validateCustomerOwnership(customerId);
+
+      // Se añade la Cita al Customer
+      return ResponseEntity.ok(appointmentService.linkAppointmentWithCustomer(customerId, appointmentId));
+   }
+
    @DeleteMapping("/{id}")
    public ResponseEntity<?> deleteAppointment(@PathVariable Long id) {
       appointmentService.delete(id);

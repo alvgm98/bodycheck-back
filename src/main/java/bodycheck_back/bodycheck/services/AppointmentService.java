@@ -89,6 +89,15 @@ public class AppointmentService {
       return convertToDto(appointmentRepository.save(appointment));
    }
 
+   public AppointmentDTO linkAppointmentWithCustomer(Long customerId, Long appointmentId) {
+      Appointment appointment = appointmentRepository.findById(appointmentId).orElseThrow();
+      appointment.setCustomer(Customer.builder().id(customerId).build());
+      appointment.setCustomerName("");
+      appointment.setCustomerPhone("");
+      
+      return convertToDto(appointmentRepository.save(appointment));
+   }
+
    @Transactional
    public void delete(Long id) {
       Appointment appointment = findById(id);
