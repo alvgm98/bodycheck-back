@@ -1,8 +1,9 @@
 package bodycheck_back.bodycheck.services;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -20,10 +21,14 @@ public class MailService {
    private JavaMailSender mailSender;
 
    public void sendWelcomeEmail(String to, String name) throws MessagingException, IOException {
-      // Leer la plantilla del archivo
-      String htmlContent = new String(
-            Files.readAllBytes(new ClassPathResource("templates/welcome_mail.html").getFile().toPath()),
-            StandardCharsets.UTF_8);
+      // Leer la plantilla del archivo desde el classpath (dentro del JAR)
+      InputStream inputStream = getClass().getResourceAsStream("/templates/welcome_mail.html");
+
+      if (inputStream == null) {
+         throw new FileNotFoundException("No se pudo encontrar el archivo de plantilla.");
+      }
+
+      String htmlContent = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
 
       // Reemplazar variables dinámicas
       htmlContent = htmlContent.replace("{{nombre}}", name)
