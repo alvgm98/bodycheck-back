@@ -11,7 +11,11 @@ public class CorsConfig implements WebMvcConfigurer {
    @Override
    public void addCorsMappings(CorsRegistry registry) {
       registry.addMapping("/**")
-            .allowedOriginPatterns("http://*:4200", "http://localhost:[*]")
+            .allowedOriginPatterns(
+                  "http://*:4200",
+                  "http://localhost:[*]",
+                  "https://bodycheck-fv8uivmlf-alvgm98s-projects.vercel.app",
+                  "https://bodycheck.es")
             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
             .allowedHeaders("*")
             .allowCredentials(true);
