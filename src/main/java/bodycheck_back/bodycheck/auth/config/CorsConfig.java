@@ -14,7 +14,7 @@ public class CorsConfig implements WebMvcConfigurer {
             .allowedOriginPatterns(
                   "http://*:4200",
                   "http://localhost:[*]",
-                  "https://bodycheck-fv8uivmlf-alvgm98s-projects.vercel.app",
+                  "https://bodycheck.vercel.app",
                   "https://bodycheck.es")
             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
             .allowedHeaders("*")
