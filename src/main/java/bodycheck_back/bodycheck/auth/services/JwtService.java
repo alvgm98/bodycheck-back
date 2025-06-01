@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 
@@ -21,19 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JwtService {
 
-   /* 
-    * Al final del desarrollo.
-    * Reemplazar el la Key constante por el generador de keys.
-    * Eliminar el metodo getKey().
-    */
-   // public final static Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-
-   private static final String SECRET_KEY = "586E3272357538782F413F4428472B4B6250655368566B597033733676397924";
-
-   private Key getKey() {
-      byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
-      return Keys.hmacShaKeyFor(keyBytes);
-   }
+   private final static Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
    public String getToken(UserDetails user) {
       return getToken(new HashMap<>(), user);
@@ -45,7 +32,7 @@ public class JwtService {
             .setSubject(user.getUsername())
             .setIssuedAt(new Date(System.currentTimeMillis()))
             .setExpiration(new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(6)))
-            .signWith(getKey(), SignatureAlgorithm.HS256)
+            .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
             .compact();
    }
 
@@ -69,7 +56,7 @@ public class JwtService {
    private Claims getAllClaims(String token) {
       return Jwts
             .parserBuilder()
-            .setSigningKey(getKey())
+            .setSigningKey(SECRET_KEY)
             .build()
             .parseClaimsJws(token)
             .getBody();
